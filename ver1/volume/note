@@ -1,0 +1,2 @@
+gán labels cho db để chỉ chạy db ở 1 node: 
+kubectl label node ip-10-0-203-197 mysql-node=true

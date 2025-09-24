@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: admin-pod
+  labels:
+    app: admin-app
+    tier: frontend
+spec:
+  containers:
+    - name: admin-container
+      image: 10.0.203.93:5555/admin-image:latest
+      env:
+        - name: MYSQL_HOST
+          value: "mysql"
+        - name: MYSQL_USER
+          value: "myuser"
+        - name: MYSQL_PASSWORD
+          value: "123456a@A"
+        - name: DATABASE_NAME
+          value: "phonebook"

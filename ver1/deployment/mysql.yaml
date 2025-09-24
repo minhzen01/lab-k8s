@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql-deployment
+  namespace: database
+  labels:
+    app: mysql-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      name: mysql
+      labels:
+        app: mysql
+    spec:
+      nodeSelector:
+        mysql-node: "true"
+      containers:
+        - name: mysql
+          image: 10.0.203.26:5555/mysql-image:latest
+          ports:
+            - containerPort: 3306
+          envFrom: 
+            - secretRef:
+                name: mysql-config
+            - configMapRef: 
+                name: mysql-config 
+          volumeMounts:
+            - name: mysql-data
+              mountPath: /var/lib/mysql
+            - name: init-sql
+              mountPath: /docker-entrypoint-initdb.d
+          startupProbe:
+            tcpSocket:
+              port: 3306
+            failureThreshold: 60
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket: 
+              port: 3306
+            initialDelaySeconds: 60
+            periodSeconds: 30
+          readinessProbe:
+            tcpSocket: 
+              port: 3306
+            initialDelaySeconds: 10
+            periodSeconds: 15
+          resources:
+            requests:
+              memory: "1Gi"
+              cpu: "500m"
+            limits: 
+              memory: "2Gi"
+              cpu: "1000m"
+      volumes:
+        - name: mysql-data
+          persistentVolumeClaim:
+            claimName: mysql-pvc-0
+        - name: init-sql
+          configMap:
+            name: mysql-init

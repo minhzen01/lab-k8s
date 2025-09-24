@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: admin-deployment
+  namespace: admin
+  labels:
+    app: admin-app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: admin-app
+      tier: frontend
+  template:
+    metadata:
+      name: admin-pod
+      labels:
+        app: admin-app
+        tier: frontend
+    spec:
+      serviceAccountName: admin-account
+      containers:
+        - name: admin-container
+          image: 10.0.203.80:5555/admin-image:latest
+          envFrom: 
+            - secretRef:
+                name: admin-config
+            - configMapRef: 
+                name: admin-config
+          livenessProbe:
+            httpGet:
+              path: /admin
+              port: 80
+            initialDelaySeconds: 30
+            periodSeconds: 20
+          readinessProbe:
+            httpGet:
+              path: /admin
+              port: 80
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "256Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"

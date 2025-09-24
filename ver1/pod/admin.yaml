@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: admin-pod
+  labels:
+    app: admin-app
+    tier: frontend
+spec:
+  containers:
+    - name: admin-container
+      image: 10.0.203.75:5555/admin-image:latest
+      envFrom: 
+        - secretRef:
+            name: frontend-config
+        - configMapRef: 
+            name: frontend-config

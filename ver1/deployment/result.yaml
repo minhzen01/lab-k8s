@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: result-deployment
+  namespace: client
+  labels:
+    app: result-app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: result-app
+      tier: frontend
+  template:
+    metadata:
+      name: result-pod
+      labels:
+        app: result-app
+        tier: frontend
+    spec:
+      serviceAccountName: client-account
+      containers:
+        - name: result-container
+          image: 10.0.203.80:5555/result-image:latest
+          envFrom: 
+            - secretRef:
+                name: result-config
+            - configMapRef: 
+                name: result-config
+          livenessProbe:
+            httpGet:
+              path: /client
+              port: 80
+            initialDelaySeconds: 30
+            periodSeconds: 20
+          readinessProbe:
+            httpGet:
+              path: /client
+              port: 80
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "256Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"

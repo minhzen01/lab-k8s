@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql-init
+data:
+  init.sql: |
+    CREATE DATABASE IF NOT EXISTS phonebook;
+    CREATE USER IF NOT EXISTS 'myuser'@'%' IDENTIFIED BY '123456a@A';        
+    GRANT ALL PRIVILEGES ON phonebook.* TO 'myuser'@'%';
+    FLUSH PRIVILEGES;

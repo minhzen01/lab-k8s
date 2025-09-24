@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: admin-config
+  namespace: admin
+data:
+  MYSQL_HOST: mysql-statefulset-0.mysql-service.database.svc.cluster.local
+  DATABASE_NAME: phonebook
+  

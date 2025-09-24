@@ -1,0 +1,3 @@
+k delete deployment admin-deployment -n admin
+k delete deployment result-deployment -n client
+k delete deployment mysql-deployment -n database

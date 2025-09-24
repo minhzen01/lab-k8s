@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: result-pod
+  labels:
+    app: result-app
+    tier: frontend
+spec:
+  containers:
+    - name: result-container
+      image: 10.0.203.75:5555/result-image:latest
+      envFrom: 
+        - secretRef:
+            name: frontend-config
+        - configMapRef: 
+            name: frontend-config

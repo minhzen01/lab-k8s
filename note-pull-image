@@ -1,0 +1,42 @@
+1. Tạo thư mục cấu hình RKE2
+sudo mkdir -p /etc/rancher/rke2
+
+2. Tạo file registries.yaml
+sudo nano /etc/rancher/rke2/registries.yaml
+
+mirrors:
+  "10.0.203.80:5555":
+    endpoint:
+      - "http://10.0.203.80:5555"
+
+configs:
+  "10.0.203.80:5555":
+    tls:
+      insecure_skip_verify: true
+
+3. Restart RKE2
+sudo systemctl restart rke2-server
+# hoặc nếu node này là agent
+sudo systemctl restart rke2-agent
+
+server: https://10.0.203.109:9345
+token: K10270d9d891f4bb5ff881660550b9bc33ca15fcb20242fe1efe2a9429d5c866001::server:0b65a7f6125a444f0d2103b3d4fe8306
+
+
+KUBEADM + containerd
+vi /etc/containerd/config.toml
+Tìm plugins."io.containerd.grpc.v1.cri".registry.mirrors
+Thêm:
+[plugins."io.containerd.grpc.v1.cri".registry.mirrors."10.0.203.80:5555"]
+  endpoint = ["http://10.0.203.80:5555"]
+
+[plugins."io.containerd.grpc.v1.cri".registry.configs."10.0.203.80:5555".tls]
+  insecure_skip_verify = true
+  cert_file = ""
+  key_file = ""
+  ca_file = ""
+
+
+Sau đó restart containerd 
+sudo systemctl restart containerd
+
